@@ -112,7 +112,6 @@ public class CustomerContactsSaxParser extends DefaultHandler implements Parser 
         if(customers.size() > 100){
             if(batchSizeReachedListener != null){
                 batchSizeReachedListener.trySaveBatch(customers);
-                customers.clear();
             }
         }
     }

@@ -14,7 +14,7 @@ public class CSVReader implements Reader {
     @Override
     public void readAndSaveToDB(File file, DBConnector dbConnector) {
         Parser parser = new CustomerContactsCSVParser();
-        parser.setBatchSizeReachedListener(customers -> dbConnector.saveCustomerContactsToDB(customers));
+        parser.setBatchSizeReachedListener(customers -> {dbConnector.saveCustomerContactsToDB(customers); customers.clear();});
         List<Customer> customers = parser.getCustomersFromFile(file);
         dbConnector.saveCustomerContactsToDB(customers);
     }

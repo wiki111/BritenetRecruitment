@@ -16,6 +16,7 @@ public class MySQLConnector implements DBConnector {
     private static final String SQL_INSERT_CUSTOMER = "INSERT INTO customers (NAME, SURNAME, AGE, CITY) VALUES (?, ?, ?, ?)";
     private static final String SQL_INSERT_CONTACT = "INSERT INTO contacts (ID_CUSTOMER, TYPE, CONTACT) VALUES (?, ?, ?)";
     private Connection connection;
+    private ObjectProcessedListener objectProcessedListener;
 
     private void initConnection() throws SQLException {
         this.connection = DriverManager.getConnection(JDBC_URL, DB_USERNAME, DB_PASSWORD);
@@ -42,6 +43,11 @@ public class MySQLConnector implements DBConnector {
         }
     }
 
+    @Override
+    public void setCustomerPersistedListener(ObjectProcessedListener listener) {
+        this.objectProcessedListener = listener;
+    }
+
     private void persistContacts(List<Customer> customers, ResultSet generatedKeys) throws SQLException{
         PreparedStatement contactStatement = connection.prepareStatement(SQL_INSERT_CONTACT);
         for(Customer customer : customers){
@@ -49,6 +55,8 @@ public class MySQLConnector implements DBConnector {
             int customerId = generatedKeys.getInt(1);
             for(Contact contact : customer.getContactList()){
                 setUpContactStatement(contactStatement, contact, customerId);
+                objectProcessedListener.objectProcessed(contact.toString());
+                System.out.println(contact.toString());
                 contactStatement.addBatch();
             }
         }
@@ -61,6 +69,8 @@ public class MySQLConnector implements DBConnector {
 
         for(Customer customer : customers){
             setUpCustomerStatement(customerStatement, customer);
+            objectProcessedListener.objectProcessed(customer.toString());
+            System.out.println(customer.toString());
             customerStatement.addBatch();
         }
 

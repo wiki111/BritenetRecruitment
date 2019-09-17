@@ -1,11 +1,14 @@
 package gui;
 
+import database.DBConnector;
 import database.DbConnectorFactory;
 import readers.CSVReader;
 import readers.Reader;
 import readers.XMLReader;
 import utils.Utils;
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -14,6 +17,7 @@ public class ApplicationGUI {
 
     static JFileChooser jFileChooser;
     static JFrame mainFrame;
+    static JTextArea logArea;
 
     public void run(){
         mainFrame = new JFrame("Britenet Recruitment Task");
@@ -23,6 +27,14 @@ public class ApplicationGUI {
         jFileChooser = new JFileChooser();
         JButton saveToDBBtn = new JButton("Save to DB");
         saveToDBBtn.addActionListener(new SaveToDBButtonListener());
+        logArea = new JTextArea(10, 50);
+        JScrollPane areaScrollPane = new JScrollPane(logArea);
+        areaScrollPane.setVerticalScrollBarPolicy(
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        logArea.setEditable(false);
+        DefaultCaret caret = (DefaultCaret)logArea.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+        mainPanel.add(areaScrollPane);
         mainPanel.add(saveToDBBtn);
         mainFrame.getContentPane().add(mainPanel);
         mainFrame.setVisible(true);
@@ -51,10 +63,17 @@ public class ApplicationGUI {
                         reader = null;
                 }
                 if(reader != null){
-                    reader.readAndSaveToDB(file, DbConnectorFactory.getDbConnector());
+                    DBConnector connector = DbConnectorFactory.getDbConnector();
+                    mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                    connector.setCustomerPersistedListener(data -> logArea.append(data + "\n"));
+                    logArea.append("Starting processing data... \n");
+                    Thread t = new Thread(() -> reader.readAndSaveToDB(file, connector));
+                    t.start();
+                    mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                    logArea.append("Data processing finished.");
                 }else{
                     JOptionPane.showMessageDialog(ApplicationGUI.mainFrame,
-                            "Unsupported file - please choose either csv or xml file to process.",
+                            "Unsupported file - please choose either txt, csv or xml file to process.",
                             "Unsupported file error",
                             JOptionPane.ERROR_MESSAGE);
                 }

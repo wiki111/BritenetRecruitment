@@ -13,7 +13,7 @@ public class XMLReader implements Reader {
     @Override
     public void readAndSaveToDB(File file, DBConnector dbConnector) {
         Parser parser = new CustomerContactsSaxParser();
-        parser.setBatchSizeReachedListener(customers -> dbConnector.saveCustomerContactsToDB(customers));
+        parser.setBatchSizeReachedListener(customers -> {dbConnector.saveCustomerContactsToDB(customers); customers.clear();});
         List<Customer> customers = parser.getCustomersFromFile(file);
         dbConnector.saveCustomerContactsToDB(customers);
     }
