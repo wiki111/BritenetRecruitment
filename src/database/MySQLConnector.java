@@ -37,21 +37,32 @@ public class MySQLConnector implements DBConnector {
     public void saveToDB(List<Customer> customers) {
         try{
            initConnection();
+            PreparedStatement customerStatement = connection.prepareStatement(SQL_INSERT_CUSTOMER, Statement.RETURN_GENERATED_KEYS);
             for(Customer customer : customers){
-                PreparedStatement customerStatement = connection.prepareStatement(SQL_INSERT_CUSTOMER, Statement.RETURN_GENERATED_KEYS);
                 customerStatement.setString(1, customer.getName());
                 customerStatement.setString(2, customer.getSurname());
                 customerStatement.setInt(3, customer.getAge());
                 customerStatement.setString(4, customer.getCity());
-                int customerId = customerStatement.executeUpdate();
+                customerStatement.addBatch();
+            }
+
+            customerStatement.executeBatch();
+            ResultSet generatedKeys = customerStatement.getGeneratedKeys();
+
+            PreparedStatement contactStatement = connection.prepareStatement(SQL_INSERT_CONTACT);
+            for(Customer customer : customers){
+                generatedKeys.next();
+                int customerId = generatedKeys.getInt(1);
+
                 for(Contact contact : customer.getContactList()){
-                    PreparedStatement contactStatement = connection.prepareStatement(SQL_INSERT_CONTACT);
                     contactStatement.setInt(1, customerId);
                     contactStatement.setInt(2, contact.getType());
                     contactStatement.setString(3, contact.getContactData());
-                    contactStatement.executeUpdate();
+                    contactStatement.addBatch();
                 }
             }
+            contactStatement.executeBatch();
+
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }finally {

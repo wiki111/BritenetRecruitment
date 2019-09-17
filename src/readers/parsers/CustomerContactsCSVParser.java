@@ -24,7 +24,6 @@ public class CustomerContactsCSVParser {
         this.customers = new ArrayList<>();
     }
 
-
     public List<Customer> getCustomersFromFile(File file){
         this.customers.clear();
         try(Scanner rowScanner = new Scanner(file)){

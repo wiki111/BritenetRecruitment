@@ -8,6 +8,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +26,12 @@ public class CustomerContactsSaxParser extends DefaultHandler {
         this.customers = new ArrayList<>();
     }
 
-    public void testParsing(){
+    public List<Customer> parseFile(File file){
         SAXParserFactory factory = SAXParserFactory.newInstance();
+
         try {
             SAXParser parser = factory.newSAXParser();
-            parser.parse("D:\\ProgrammingProjects\\BritenetRecruitment\\res\\exampledata\\dataxml.xml", this);
+            parser.parse(file, this);
         } catch (ParserConfigurationException e) {
             System.out.println("ParserConfig error");
         } catch (SAXException e) {
@@ -37,9 +39,8 @@ public class CustomerContactsSaxParser extends DefaultHandler {
         } catch (IOException e) {
             System.out.println("IO error");
         }
-        for(Customer customer : customers){
-            System.out.println(customer.toString());
-        }
+
+        return customers;
     }
 
     @Override

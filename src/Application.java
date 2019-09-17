@@ -1,5 +1,8 @@
 import database.MySQLConnector;
 import model.Customer;
+import readers.CSVReader;
+import readers.Reader;
+import readers.XMLReader;
 import readers.parsers.CustomerContactsCSVParser;
 import readers.parsers.CustomerContactsSaxParser;
 
@@ -19,6 +22,10 @@ class Application{
             System.out.println(customer.toString());
         }
         */
+        //Reader reader = new XMLReader();
+        //reader.readAndSaveToDB(new File("D:\\ProgrammingProjects\\BritenetRecruitment\\res\\exampledata\\dataxml.xml"), new MySQLConnector());
+        Reader reader = new CSVReader();
+        reader.readAndSaveToDB(new File("D:\\ProgrammingProjects\\BritenetRecruitment\\res\\exampledata\\datacsv.txt"), new MySQLConnector());
     }
 
 }
