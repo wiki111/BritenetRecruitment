@@ -2,6 +2,7 @@ package readers.parsers;
 
 import model.Contact;
 import model.Customer;
+import readers.Reader;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,14 +15,16 @@ import java.util.regex.Pattern;
 
 public class CustomerContactsCSVParser {
 
+    private Reader readerInstance;
     private List<Customer> customers;
     private static final String COMMA_DELIMITER = ",";
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private static final Pattern VALID_JABBER_ID = Pattern.compile("^[A-Za-z0-9._%+-]+@jabber.org$");
     private static final Pattern VALID_PHONE = Pattern.compile("^(\\+([0-9]){2}[\\s]?)?[1-9]{1}[0-9]{2}(([\\s\\-])?[0-9]{3}){2}$");
 
-    public CustomerContactsCSVParser() {
+    public CustomerContactsCSVParser(Reader readerInstance) {
         this.customers = new ArrayList<>();
+        this.readerInstance = readerInstance;
     }
 
     public List<Customer> getCustomersFromFile(File file){
@@ -29,12 +32,20 @@ public class CustomerContactsCSVParser {
         try(Scanner rowScanner = new Scanner(file)){
             while (rowScanner.hasNextLine()){
                 customers.add(getCustomerData(rowScanner.nextLine()));
+                trySaveBatch(customers);
             }
         }catch (IOException e){
             System.out.println(e.getMessage());
         }
 
         return customers;
+    }
+
+    private void trySaveBatch(List<Customer> customers){
+        if(customers.size() > 100){
+            readerInstance.saveBatch(customers);
+            customers.clear();
+        }
     }
 
     private Customer getCustomerData(String readLine){

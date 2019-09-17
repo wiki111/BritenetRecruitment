@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface DBConnector {
 
-    void saveToDB(List<Customer> customers);
+    void saveCustomerContactsToDB(List<Customer> customers);
 
 }

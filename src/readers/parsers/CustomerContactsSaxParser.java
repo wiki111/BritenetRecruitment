@@ -5,6 +5,7 @@ import model.Customer;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+import readers.Reader;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -21,9 +22,11 @@ public class CustomerContactsSaxParser extends DefaultHandler {
     private String valuePlaceholder;
     private boolean isInCustomer;
     private boolean isInContact;
+    private Reader readerInstance;
 
-    public CustomerContactsSaxParser() {
+    public CustomerContactsSaxParser(Reader readerInstance) {
         this.customers = new ArrayList<>();
+        this.readerInstance = readerInstance;
     }
 
     public List<Customer> parseFile(File file){
@@ -90,8 +93,18 @@ public class CustomerContactsSaxParser extends DefaultHandler {
                 customerPlaceholder.setCity(valuePlaceholder);
             }else if(qName.equalsIgnoreCase("person")){
                 customers.add(customerPlaceholder);
+                trySaveBatch(customers);
                 isInCustomer = false;
             }
+        }
+    }
+
+    private void trySaveBatch(List<Customer> customers){
+        if(customers.size() < 100){
+            return;
+        }else {
+            readerInstance.saveBatch(customers);
+            customers.clear();
         }
     }
 

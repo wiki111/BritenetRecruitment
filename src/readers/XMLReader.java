@@ -8,10 +8,19 @@ import java.io.File;
 import java.util.List;
 
 public class XMLReader implements Reader {
+
+    private DBConnector dbConnector;
+
     @Override
     public void readAndSaveToDB(File file, DBConnector dbConnector) {
-        CustomerContactsSaxParser customerContactsSaxParser = new CustomerContactsSaxParser();
+        this.dbConnector = dbConnector;
+        CustomerContactsSaxParser customerContactsSaxParser = new CustomerContactsSaxParser(this);
         List<Customer> customers = customerContactsSaxParser.parseFile(file);
-        dbConnector.saveToDB(customers);
+        dbConnector.saveCustomerContactsToDB(customers);
+    }
+
+    @Override
+    public void saveBatch(List<Customer> customers) {
+        dbConnector.saveCustomerContactsToDB(customers);
     }
 }

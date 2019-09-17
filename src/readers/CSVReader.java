@@ -8,10 +8,19 @@ import java.io.File;
 import java.util.List;
 
 public class CSVReader implements Reader {
+
+    private DBConnector dbConnector;
+
     @Override
     public void readAndSaveToDB(File file, DBConnector dbConnector) {
-        CustomerContactsCSVParser customerContactsCSVParser = new CustomerContactsCSVParser();
+        this.dbConnector = dbConnector;
+        CustomerContactsCSVParser customerContactsCSVParser = new CustomerContactsCSVParser(this);
         List<Customer> customers = customerContactsCSVParser.getCustomersFromFile(file);
-        dbConnector.saveToDB(customers);
+
+    }
+
+    @Override
+    public void saveBatch(List<Customer> customers) {
+        dbConnector.saveCustomerContactsToDB(customers);
     }
 }
