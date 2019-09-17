@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Customer {
-    private int id;
     private String name;
     private String Surname;
     private int age;
@@ -13,21 +12,6 @@ public class Customer {
 
     public Customer() {
         contactList = new ArrayList<>();
-    }
-
-    public Customer(int id, String name, String surname, int age) {
-        this.id = id;
-        this.name = name;
-        Surname = surname;
-        this.age = age;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -66,19 +50,15 @@ public class Customer {
         return contactList;
     }
 
-    public void setContactList(List<Contact> contactList) {
-        this.contactList = contactList;
-    }
-
     @Override
     public String toString() {
         return "Customer{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", Surname='" + Surname + '\'' +
                 ", age=" + age +
                 ", city='" + city + '\'' +
                 ", contactList=" + contactList +
                 '}';
     }
+
 }

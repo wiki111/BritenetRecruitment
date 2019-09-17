@@ -1,17 +1,8 @@
 package model;
 
 public class Contact {
-    private int id;
     private String contactData;
     private int type;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getContactData() {
         return contactData;
@@ -31,9 +22,8 @@ public class Contact {
 
     @Override
     public String toString() {
-        return "model.Contact{" +
-                "id=" + id +
-                ", contactData='" + contactData + '\'' +
+        return "Contact{" +
+                "contactData='" + contactData + '\'' +
                 ", type=" + type +
                 '}';
     }
