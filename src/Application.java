@@ -1,4 +1,6 @@
+import database.DBConnector;
 import database.MySQLConnector;
+import gui.ApplicationGUI;
 import model.Customer;
 import readers.CSVReader;
 import readers.Reader;
@@ -24,8 +26,12 @@ class Application{
         */
         //Reader reader = new XMLReader();
         //reader.readAndSaveToDB(new File("D:\\ProgrammingProjects\\BritenetRecruitment\\res\\exampledata\\dataxml.xml"), new MySQLConnector());
-        Reader reader = new CSVReader();
-        reader.readAndSaveToDB(new File("D:\\ProgrammingProjects\\BritenetRecruitment\\res\\exampledata\\datacsv.txt"), new MySQLConnector());
+        //Reader reader = new CSVReader();
+       // reader.readAndSaveToDB(new File("D:\\ProgrammingProjects\\BritenetRecruitment\\res\\exampledata\\datacsv.txt"), new MySQLConnector());
+        ApplicationGUI gui = new ApplicationGUI();
+        gui.run();
     }
+
+
 
 }
