@@ -67,10 +67,10 @@ public class ApplicationGUI {
                     mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     connector.setCustomerPersistedListener(data -> logArea.append(data + "\n"));
                     logArea.append("Starting processing data... \n");
-                    Thread t = new Thread(() -> reader.readAndSaveToDB(file, connector));
+                    Thread t = new Thread(() -> {reader.readAndSaveToDB(file, connector); logArea.append("Data processing finished.");});
                     t.start();
                     mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                    logArea.append("Data processing finished.");
+
                 }else{
                     JOptionPane.showMessageDialog(ApplicationGUI.mainFrame,
                             "Unsupported file - please choose either txt, csv or xml file to process.",
