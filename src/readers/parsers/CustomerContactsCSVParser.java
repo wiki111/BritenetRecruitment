@@ -13,7 +13,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CustomerContactsCSVParser {
+public class CustomerContactsCSVParser implements Parser {
 
     private Reader readerInstance;
     private List<Customer> customers;
@@ -27,6 +27,7 @@ public class CustomerContactsCSVParser {
         this.readerInstance = readerInstance;
     }
 
+    @Override
     public List<Customer> getCustomersFromFile(File file){
         this.customers.clear();
         try(Scanner rowScanner = new Scanner(file)){

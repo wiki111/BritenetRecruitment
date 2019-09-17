@@ -3,6 +3,7 @@ package readers;
 import database.DBConnector;
 import model.Customer;
 import readers.parsers.CustomerContactsSaxParser;
+import readers.parsers.Parser;
 
 import java.io.File;
 import java.util.List;
@@ -14,9 +15,9 @@ public class XMLReader implements Reader {
     @Override
     public void readAndSaveToDB(File file, DBConnector dbConnector) {
         this.dbConnector = dbConnector;
-        CustomerContactsSaxParser customerContactsSaxParser = new CustomerContactsSaxParser(this);
-        List<Customer> customers = customerContactsSaxParser.parseFile(file);
-        dbConnector.saveCustomerContactsToDB(customers);
+        Parser parser = new CustomerContactsSaxParser(this);
+        List<Customer> customers = parser.getCustomersFromFile(file);
+        saveBatch(customers);
     }
 
     @Override

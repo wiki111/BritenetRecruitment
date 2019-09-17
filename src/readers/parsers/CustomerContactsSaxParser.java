@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomerContactsSaxParser extends DefaultHandler {
+public class CustomerContactsSaxParser extends DefaultHandler implements Parser {
 
     private Customer customerPlaceholder;
     private Contact contactPlaceholder;
@@ -29,7 +29,12 @@ public class CustomerContactsSaxParser extends DefaultHandler {
         this.readerInstance = readerInstance;
     }
 
-    public List<Customer> parseFile(File file){
+    @Override
+    public List<Customer> getCustomersFromFile(File file) {
+        return parseFile(file);
+    }
+
+    private List<Customer> parseFile(File file){
         SAXParserFactory factory = SAXParserFactory.newInstance();
 
         try {
@@ -100,9 +105,7 @@ public class CustomerContactsSaxParser extends DefaultHandler {
     }
 
     private void trySaveBatch(List<Customer> customers){
-        if(customers.size() < 100){
-            return;
-        }else {
+        if(customers.size() > 100){
             readerInstance.saveBatch(customers);
             customers.clear();
         }
@@ -112,4 +115,6 @@ public class CustomerContactsSaxParser extends DefaultHandler {
     public void characters(char[] ch, int start, int length) throws SAXException {
         valuePlaceholder = new String(ch, start, length);
     }
+
+
 }

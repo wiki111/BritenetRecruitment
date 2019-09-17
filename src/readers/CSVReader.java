@@ -3,6 +3,7 @@ package readers;
 import database.DBConnector;
 import model.Customer;
 import readers.parsers.CustomerContactsCSVParser;
+import readers.parsers.Parser;
 
 import java.io.File;
 import java.util.List;
@@ -14,9 +15,9 @@ public class CSVReader implements Reader {
     @Override
     public void readAndSaveToDB(File file, DBConnector dbConnector) {
         this.dbConnector = dbConnector;
-        CustomerContactsCSVParser customerContactsCSVParser = new CustomerContactsCSVParser(this);
-        List<Customer> customers = customerContactsCSVParser.getCustomersFromFile(file);
-
+        Parser parser = new CustomerContactsCSVParser(this);
+        List<Customer> customers = parser.getCustomersFromFile(file);
+        saveBatch(customers);
     }
 
     @Override
