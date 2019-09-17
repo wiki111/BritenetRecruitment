@@ -17,7 +17,6 @@ import java.util.List;
 public class CustomerContactsSaxParser extends DefaultHandler implements Parser {
 
     private Customer customerPlaceholder;
-    private Contact contactPlaceholder;
     private List<Customer> customers;
     private String valuePlaceholder;
     private boolean isInCustomer;
@@ -69,6 +68,7 @@ public class CustomerContactsSaxParser extends DefaultHandler implements Parser 
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if(isInCustomer){
             if(isInContact){
+                Contact contactPlaceholder;
                 if(qName.equalsIgnoreCase("phone")){
                     contactPlaceholder = new Contact();
                     contactPlaceholder.setContactData(valuePlaceholder);
