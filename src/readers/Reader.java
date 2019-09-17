@@ -9,5 +9,4 @@ import java.util.List;
 
 public interface Reader {
     void readAndSaveToDB(File file, DBConnector dbConnector);
-    void saveBatch(List<Customer> customers);
 }

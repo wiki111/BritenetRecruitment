@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface Parser {
     List<Customer> getCustomersFromFile(File file);
+    void setBatchSizeReachedListener(BatchSizeReachedListener listener);
 }

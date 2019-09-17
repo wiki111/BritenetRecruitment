@@ -15,16 +15,20 @@ import java.util.regex.Pattern;
 
 public class CustomerContactsCSVParser implements Parser {
 
-    private Reader readerInstance;
     private List<Customer> customers;
     private static final String COMMA_DELIMITER = ",";
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private static final Pattern VALID_JABBER_ID = Pattern.compile("^[A-Za-z0-9._%+-]+@jabber.org$");
     private static final Pattern VALID_PHONE = Pattern.compile("^(\\+([0-9]){2}[\\s]?)?[1-9]{1}[0-9]{2}(([\\s\\-])?[0-9]{3}){2}$");
+    private BatchSizeReachedListener batchSizeReachedListener;
 
-    public CustomerContactsCSVParser(Reader readerInstance) {
+    public CustomerContactsCSVParser() {
         this.customers = new ArrayList<>();
-        this.readerInstance = readerInstance;
+    }
+
+    @Override
+    public void setBatchSizeReachedListener(BatchSizeReachedListener batchSizeReachedListener) {
+        this.batchSizeReachedListener = batchSizeReachedListener;
     }
 
     @Override
@@ -44,8 +48,10 @@ public class CustomerContactsCSVParser implements Parser {
 
     private void trySaveBatch(List<Customer> customers){
         if(customers.size() > 100){
-            readerInstance.saveBatch(customers);
-            customers.clear();
+            if(batchSizeReachedListener != null){
+                batchSizeReachedListener.trySaveBatch(customers);
+                customers.clear();
+            }
         }
     }
 

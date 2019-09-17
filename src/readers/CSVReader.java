@@ -2,6 +2,7 @@ package readers;
 
 import database.DBConnector;
 import model.Customer;
+import readers.parsers.BatchSizeReachedListener;
 import readers.parsers.CustomerContactsCSVParser;
 import readers.parsers.Parser;
 
@@ -15,13 +16,11 @@ public class CSVReader implements Reader {
     @Override
     public void readAndSaveToDB(File file, DBConnector dbConnector) {
         this.dbConnector = dbConnector;
-        Parser parser = new CustomerContactsCSVParser(this);
+        Parser parser = new CustomerContactsCSVParser();
+        parser.setBatchSizeReachedListener(customers -> dbConnector.saveCustomerContactsToDB(customers));
         List<Customer> customers = parser.getCustomersFromFile(file);
-        saveBatch(customers);
-    }
-
-    @Override
-    public void saveBatch(List<Customer> customers) {
         dbConnector.saveCustomerContactsToDB(customers);
     }
+
+
 }

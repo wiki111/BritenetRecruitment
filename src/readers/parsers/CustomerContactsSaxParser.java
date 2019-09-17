@@ -22,11 +22,15 @@ public class CustomerContactsSaxParser extends DefaultHandler implements Parser 
     private String valuePlaceholder;
     private boolean isInCustomer;
     private boolean isInContact;
-    private Reader readerInstance;
+    private BatchSizeReachedListener batchSizeReachedListener;
 
-    public CustomerContactsSaxParser(Reader readerInstance) {
+    public CustomerContactsSaxParser() {
         this.customers = new ArrayList<>();
-        this.readerInstance = readerInstance;
+    }
+
+    @Override
+    public void setBatchSizeReachedListener(BatchSizeReachedListener batchSizeReachedListener) {
+        this.batchSizeReachedListener = batchSizeReachedListener;
     }
 
     @Override
@@ -106,8 +110,10 @@ public class CustomerContactsSaxParser extends DefaultHandler implements Parser 
 
     private void trySaveBatch(List<Customer> customers){
         if(customers.size() > 100){
-            readerInstance.saveBatch(customers);
-            customers.clear();
+            if(batchSizeReachedListener != null){
+                batchSizeReachedListener.trySaveBatch(customers);
+                customers.clear();
+            }
         }
     }
 
