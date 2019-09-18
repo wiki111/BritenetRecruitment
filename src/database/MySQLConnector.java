@@ -2,6 +2,7 @@ package database;
 
 import model.Contact;
 import model.Customer;
+import utils.ApplicationProperties;
 
 import java.sql.*;
 import java.util.List;
@@ -9,14 +10,38 @@ import java.util.List;
 public class MySQLConnector implements DBConnector {
 
     //TODO : parameterize
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/CustomersAndContactsDB?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-    private static final String DB_NAME = "customersandcontactsdb";
-    private static final String DB_USERNAME = "root";
-    private static final String DB_PASSWORD = "RK6AFJZ0t^l#";
-    private static final String SQL_INSERT_CUSTOMER = "INSERT INTO customers (NAME, SURNAME, AGE, CITY) VALUES (?, ?, ?, ?)";
-    private static final String SQL_INSERT_CONTACT = "INSERT INTO contacts (ID_CUSTOMER, TYPE, CONTACT) VALUES (?, ?, ?)";
+    private static String JDBC_URL;
+    private static String DB_NAME;
+    private static String DB_USERNAME;
+    private static String DB_PASSWORD;
+    private static String SQL_INSERT_CUSTOMER;
+    private static String SQL_INSERT_CONTACT;
     private Connection connection;
     private ObjectProcessedListener objectProcessedListener;
+
+    public MySQLConnector(){
+        try{
+            JDBC_URL = ApplicationProperties.getProperty("mysql.JDBC_URL");
+            DB_NAME = ApplicationProperties.getProperty("mysql.DB_NAME");
+            DB_USERNAME = ApplicationProperties.getProperty("mysql.DB_USERNAME");
+            DB_PASSWORD = ApplicationProperties.getProperty("mysql.DB_PASSWORD");
+            SQL_INSERT_CUSTOMER = "INSERT INTO " +
+                    ApplicationProperties.getProperty("mysql.customers.tablename") + "(" +
+                    ApplicationProperties.getProperty("mysql.customers.column.name") + "," +
+                    ApplicationProperties.getProperty("mysql.customers.column.surname") + "," +
+                    ApplicationProperties.getProperty("mysql.customers.column.age") + "," +
+                    ApplicationProperties.getProperty("mysql.customers.column.city") + ")" +
+                    "VALUES (?,?,?,?)";
+            SQL_INSERT_CONTACT = "INSERT INTO " +
+                    ApplicationProperties.getProperty("mysql.contacts.tablename") + "(" +
+                    ApplicationProperties.getProperty("mysql.contacts.column.id_customer") + "," +
+                    ApplicationProperties.getProperty("mysql.contacts.column.type") + "," +
+                    ApplicationProperties.getProperty("mysql.contacts.column.contact") + ")" +
+                    "VALUES (?,?,?)";
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
 
     private void initConnection() throws SQLException {
         this.connection = DriverManager.getConnection(JDBC_URL, DB_USERNAME, DB_PASSWORD);
