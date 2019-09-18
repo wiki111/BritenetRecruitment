@@ -110,7 +110,7 @@ public class CustomerContactsSaxParser extends DefaultHandler implements Parser 
             }else if(qName.equalsIgnoreCase("age")){
                 customerPlaceholder.setAge(Integer.valueOf(valuePlaceholder));
             }else if(qName.equalsIgnoreCase("city")){
-                customerPlaceholder.setCity(valuePlaceholder);
+                //do nothing - don't collect data
             }else if(qName.equalsIgnoreCase("person")){
                 customers.add(customerPlaceholder);
                 try{

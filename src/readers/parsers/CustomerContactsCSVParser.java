@@ -90,7 +90,6 @@ public class CustomerContactsCSVParser implements Parser {
         }catch (NumberFormatException e){
             customer.setAge(0);
         }
-        customer.setCity(data.get(3));
         if(data.size() > 3){
             ListIterator<String> iterator = data.listIterator(4);
             while (iterator.hasNext()){

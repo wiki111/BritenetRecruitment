@@ -7,7 +7,6 @@ public class Customer {
     private String name;
     private String Surname;
     private int age;
-    private String city;
     List<Contact> contactList;
 
     public Customer() {
@@ -38,14 +37,6 @@ public class Customer {
         this.age = age;
     }
 
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
     public List<Contact> getContactList() {
         return contactList;
     }
@@ -56,7 +47,6 @@ public class Customer {
                 "name='" + name + '\'' +
                 ", Surname='" + Surname + '\'' +
                 ", age=" + age +
-                ", city='" + city + '\'' +
                 ", contactList=" + contactList +
                 '}';
     }

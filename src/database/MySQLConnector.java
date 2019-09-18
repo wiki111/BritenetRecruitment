@@ -27,9 +27,8 @@ public class MySQLConnector implements DBConnector {
                     ApplicationProperties.getProperty("mysql.customers.tablename") + "(" +
                     ApplicationProperties.getProperty("mysql.customers.column.name") + "," +
                     ApplicationProperties.getProperty("mysql.customers.column.surname") + "," +
-                    ApplicationProperties.getProperty("mysql.customers.column.age") + "," +
-                    ApplicationProperties.getProperty("mysql.customers.column.city") + ")" +
-                    "VALUES (?,?,?,?)";
+                    ApplicationProperties.getProperty("mysql.customers.column.age")  + ")" +
+                    "VALUES (?,?,?)";
             SQL_INSERT_CONTACT = "INSERT INTO " +
                     ApplicationProperties.getProperty("mysql.contacts.tablename") + "(" +
                     ApplicationProperties.getProperty("mysql.contacts.column.id_customer") + "," +
@@ -92,7 +91,6 @@ public class MySQLConnector implements DBConnector {
         customerStatement.setString(1, customer.getName());
         customerStatement.setString(2, customer.getSurname());
         customerStatement.setInt(3, customer.getAge());
-        customerStatement.setString(4, customer.getCity());
     }
 
     private void setUpContactStatement(PreparedStatement contactStatement, Contact contact, int customerId) throws SQLException{
