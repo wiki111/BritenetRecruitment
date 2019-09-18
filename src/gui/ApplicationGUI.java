@@ -2,13 +2,11 @@ package gui;
 
 import database.DBConnector;
 import database.DbConnectorFactory;
-import readers.CSVReader;
 import readers.Reader;
-import readers.XMLReader;
+import readers.ReaderFactory;
 import utils.Utils;
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -109,7 +107,7 @@ public class ApplicationGUI {
             if(returnValue == JFileChooser.APPROVE_OPTION){
                 File file = jFileChooser.getSelectedFile();
                 String extension = Utils.getExtension(file);
-                Reader reader = createReader(extension);
+                Reader reader = ReaderFactory.getReaderForFileType(extension);
                 if(reader != null){
                     SwingWorker swingWorker = getWorkerToProcessFile(reader, file);
                     swingWorker.execute();
@@ -134,21 +132,4 @@ public class ApplicationGUI {
                 JOptionPane.ERROR_MESSAGE);
     }
 
-    private Reader createReader(String fileExtension){
-        Reader reader;
-        switch (fileExtension){
-            case Utils.txt:
-                reader = new CSVReader();
-                break;
-            case Utils.csv:
-                reader = new CSVReader();
-                break;
-            case Utils.xml:
-                reader = new XMLReader();
-                break;
-            default:
-                reader = null;
-        }
-        return reader;
-    }
 }

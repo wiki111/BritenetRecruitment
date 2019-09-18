@@ -65,7 +65,9 @@ public class MySQLConnector implements DBConnector {
             int customerId = generatedKeys.getInt(1);
             for(Contact contact : customer.getContactList()){
                 setUpContactStatement(contactStatement, contact, customerId);
-                objectProcessedListener.objectProcessed(contact.toString());
+                if(objectProcessedListener != null){
+                    objectProcessedListener.objectProcessed(contact.toString());
+                }
                 contactStatement.addBatch();
             }
         }
@@ -78,7 +80,9 @@ public class MySQLConnector implements DBConnector {
 
         for(Customer customer : customers){
             setUpCustomerStatement(customerStatement, customer);
-            objectProcessedListener.objectProcessed(customer.toString());
+            if(objectProcessedListener != null){
+                objectProcessedListener.objectProcessed(customer.toString());
+            }
             customerStatement.addBatch();
         }
 
