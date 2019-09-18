@@ -3,9 +3,11 @@ package readers.parsers;
 import model.Contact;
 import model.Customer;
 import readers.Reader;
+import utils.ApplicationProperties;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -20,10 +22,16 @@ public class CustomerContactsCSVParser implements Parser {
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private static final Pattern VALID_JABBER_ID = Pattern.compile("^[A-Za-z0-9._%+-]+@jabber.org$");
     private static final Pattern VALID_PHONE = Pattern.compile("^(\\+([0-9]){2}[\\s]?)?[1-9]{1}[0-9]{2}(([\\s\\-])?[0-9]{3}){2}$");
+    private static int batchSize = 100;
     private BatchSizeReachedListener batchSizeReachedListener;
 
     public CustomerContactsCSVParser() {
         this.customers = new ArrayList<>();
+        try{
+            batchSize = Integer.valueOf(ApplicationProperties.getProperty("application.batchsize"));
+        }catch (Exception e){
+            System.out.println("Couldnt get batch size from properties file, default value used. Error message : " + e.getMessage());
+        }
     }
 
     @Override
@@ -32,7 +40,7 @@ public class CustomerContactsCSVParser implements Parser {
     }
 
     @Override
-    public List<Customer> getCustomersFromFile(File file){
+    public List<Customer> getCustomersFromFile(File file) throws SQLException{
         this.customers.clear();
         try(Scanner rowScanner = new Scanner(file)){
             while (rowScanner.hasNextLine()){
@@ -46,8 +54,8 @@ public class CustomerContactsCSVParser implements Parser {
         return customers;
     }
 
-    private void trySaveBatch(List<Customer> customers){
-        if(customers.size() > 100){
+    private void trySaveBatch(List<Customer> customers) throws SQLException{
+        if(customers.size() >= batchSize){
             if(batchSizeReachedListener != null){
                 batchSizeReachedListener.trySaveBatch(customers);
             }
@@ -66,7 +74,6 @@ public class CustomerContactsCSVParser implements Parser {
 
     private Customer createCustomerFromData(ArrayList<String> data){
         Customer customer = new Customer();
-        int dataSize = data.size();
         customer.setName(data.get(0));
         customer.setSurname(data.get(1));
         try{

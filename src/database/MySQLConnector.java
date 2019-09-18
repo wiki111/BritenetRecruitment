@@ -19,8 +19,7 @@ public class MySQLConnector implements DBConnector {
     private Connection connection;
     private ObjectProcessedListener objectProcessedListener;
 
-    public MySQLConnector(){
-        try{
+    public MySQLConnector() throws Exception{
             JDBC_URL = ApplicationProperties.getProperty("mysql.JDBC_URL");
             DB_NAME = ApplicationProperties.getProperty("mysql.DB_NAME");
             DB_USERNAME = ApplicationProperties.getProperty("mysql.DB_USERNAME");
@@ -38,34 +37,22 @@ public class MySQLConnector implements DBConnector {
                     ApplicationProperties.getProperty("mysql.contacts.column.type") + "," +
                     ApplicationProperties.getProperty("mysql.contacts.column.contact") + ")" +
                     "VALUES (?,?,?)";
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
     }
 
     private void initConnection() throws SQLException {
         this.connection = DriverManager.getConnection(JDBC_URL, DB_USERNAME, DB_PASSWORD);
     }
 
-    private void closeConnection() {
-        try{
+    private void closeConnection() throws SQLException{
             this.connection.close();
-        }catch (SQLException e){
-            System.out.println(e.getMessage());
-        }
     }
 
     @Override
-    public void saveCustomerContactsToDB(List<Customer> customers) {
-        try{
-           initConnection();
-            ResultSet generatedKeys = persistCustomers(customers);
-            persistContacts(customers, generatedKeys);
-        }catch (SQLException e){
-            System.out.println(e.getMessage());
-        }finally {
-            closeConnection();
-        }
+    public void saveCustomerContactsToDB(List<Customer> customers) throws SQLException{
+        initConnection();
+        ResultSet generatedKeys = persistCustomers(customers);
+        persistContacts(customers, generatedKeys);
+        closeConnection();
     }
 
     @Override

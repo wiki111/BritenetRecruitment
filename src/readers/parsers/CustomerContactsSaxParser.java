@@ -6,11 +6,14 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 import readers.Reader;
+import utils.ApplicationProperties;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,10 +24,16 @@ public class CustomerContactsSaxParser extends DefaultHandler implements Parser 
     private String valuePlaceholder;
     private boolean isInCustomer;
     private boolean isInContact;
+    private static int batchSize;
     private BatchSizeReachedListener batchSizeReachedListener;
 
     public CustomerContactsSaxParser() {
         this.customers = new ArrayList<>();
+        try{
+            batchSize = Integer.valueOf(ApplicationProperties.getProperty("application.batchsize"));
+        }catch (Exception e){
+            System.out.println("Couldn't get batch size from properties file, default value used. Error message : " + e.getMessage());
+        }
     }
 
     @Override
@@ -102,14 +111,18 @@ public class CustomerContactsSaxParser extends DefaultHandler implements Parser 
                 customerPlaceholder.setCity(valuePlaceholder);
             }else if(qName.equalsIgnoreCase("person")){
                 customers.add(customerPlaceholder);
-                trySaveBatch(customers);
+                try{
+                    trySaveBatch(customers);
+                }catch (SQLException e){
+                    throw new RuntimeException(e);
+                }
                 isInCustomer = false;
             }
         }
     }
 
-    private void trySaveBatch(List<Customer> customers){
-        if(customers.size() > 100){
+    private void trySaveBatch(List<Customer> customers) throws SQLException{
+        if(customers.size() > batchSize){
             if(batchSizeReachedListener != null){
                 batchSizeReachedListener.trySaveBatch(customers);
             }
