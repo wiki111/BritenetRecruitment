@@ -16,30 +16,37 @@ import java.util.List;
 
 public class ApplicationGUI {
 
-    static JFileChooser jFileChooser;
     static JFrame mainFrame;
     static JTextArea logArea;
+    static JFileChooser jFileChooser;
     static JScrollPane areaScrollPane;
     static JButton saveToDBBtn;
 
     public void run(){
         mainFrame = new JFrame("Britenet Recruitment Task");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //mainFrame.setSize(500, 250);
+
         JPanel mainPanel = new JPanel();
-        jFileChooser = new JFileChooser();
+
         saveToDBBtn = new JButton("Save to DB");
         saveToDBBtn.addActionListener(new SaveToDBButtonListener());
+
+        jFileChooser = new JFileChooser();
+
         logArea = new JTextArea(10, 50);
+        logArea.setEditable(false);
+
         areaScrollPane = new JScrollPane(logArea);
         areaScrollPane.setVerticalScrollBarPolicy(
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        logArea.setEditable(false);
         areaScrollPane.setVisible(false);
+
         DefaultCaret caret = (DefaultCaret)logArea.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+
         mainPanel.add(areaScrollPane);
         mainPanel.add(saveToDBBtn);
+
         mainFrame.getContentPane().add(mainPanel);
         mainFrame.pack();
         mainFrame.setVisible(true);

@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class CSVReader implements Reader {
-
     @Override
     public void readAndSaveToDB(File file, DBConnector dbConnector) throws ReaderException {
         try{
@@ -27,8 +26,5 @@ public class CSVReader implements Reader {
         }catch (Exception e){
             throw new ReaderException(e.getMessage());
         }
-
     }
-
-
 }

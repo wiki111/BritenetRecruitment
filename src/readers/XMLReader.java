@@ -28,6 +28,4 @@ public class XMLReader implements Reader {
             throw new ReaderException(e.getMessage());
         }
     }
-
-
 }

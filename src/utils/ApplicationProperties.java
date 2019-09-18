@@ -17,7 +17,6 @@ public class ApplicationProperties {
         }else {
             throw new FileNotFoundException("Properties file " + propertiesFile + " not found");
         }
-
         return properties.getProperty(property);
     }
 }

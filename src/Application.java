@@ -18,6 +18,4 @@ class Application{
         gui.run();
     }
 
-
-
 }

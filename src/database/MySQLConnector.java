@@ -9,7 +9,6 @@ import java.util.List;
 
 public class MySQLConnector implements DBConnector {
 
-    //TODO : parameterize
     private static String JDBC_URL;
     private static String DB_NAME;
     private static String DB_USERNAME;
