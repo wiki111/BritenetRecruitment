@@ -1,5 +1,6 @@
 package readers;
 
+import Exceptions.ParserException;
 import database.DBConnector;
 import model.Customer;
 import readers.parsers.BatchSizeReachedListener;
@@ -14,7 +15,7 @@ import java.util.function.Consumer;
 
 public class XMLReader implements Reader {
     @Override
-    public void readAndSaveToDB(File file, DBConnector dbConnector) throws SQLException {
+    public void readAndSaveToDB(File file, DBConnector dbConnector) throws SQLException, ParserException {
         Parser parser = new CustomerContactsSaxParser();
         parser.setBatchSizeReachedListener(customers -> {
             dbConnector.saveCustomerContactsToDB(customers);

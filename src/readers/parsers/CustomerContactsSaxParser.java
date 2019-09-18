@@ -1,5 +1,6 @@
 package readers.parsers;
 
+import Exceptions.ParserException;
 import model.Contact;
 import model.Customer;
 import org.xml.sax.Attributes;
@@ -42,24 +43,18 @@ public class CustomerContactsSaxParser extends DefaultHandler implements Parser 
     }
 
     @Override
-    public List<Customer> getCustomersFromFile(File file) {
+    public List<Customer> getCustomersFromFile(File file) throws ParserException {
         return parseFile(file);
     }
 
-    private List<Customer> parseFile(File file){
+    private List<Customer> parseFile(File file) throws ParserException{
         SAXParserFactory factory = SAXParserFactory.newInstance();
-
         try {
             SAXParser parser = factory.newSAXParser();
             parser.parse(file, this);
-        } catch (ParserConfigurationException e) {
-            System.out.println("ParserConfig error");
-        } catch (SAXException e) {
-            System.out.println("SAXException : xml not well formed");
-        } catch (IOException e) {
-            System.out.println("IO error");
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            throw new ParserException(e.getMessage());
         }
-
         return customers;
     }
 
@@ -114,7 +109,7 @@ public class CustomerContactsSaxParser extends DefaultHandler implements Parser 
                 try{
                     trySaveBatch(customers);
                 }catch (SQLException e){
-                    throw new RuntimeException(e);
+                    throw new SAXException(e.getMessage());
                 }
                 isInCustomer = false;
             }

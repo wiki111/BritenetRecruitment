@@ -1,5 +1,6 @@
 package readers;
 
+import Exceptions.ParserException;
 import database.DBConnector;
 import model.Customer;
 import readers.parsers.BatchSizeReachedListener;
@@ -13,7 +14,7 @@ import java.util.List;
 public class CSVReader implements Reader {
 
     @Override
-    public void readAndSaveToDB(File file, DBConnector dbConnector) throws SQLException {
+    public void readAndSaveToDB(File file, DBConnector dbConnector) throws SQLException, ParserException {
         Parser parser = new CustomerContactsCSVParser();
         parser.setBatchSizeReachedListener(customers -> {
             dbConnector.saveCustomerContactsToDB(customers);
