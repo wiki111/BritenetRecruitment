@@ -1,4 +1,4 @@
-package Exceptions;
+package exceptions;
 
 public class ParserException extends Exception {
 

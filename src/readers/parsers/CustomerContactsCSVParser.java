@@ -1,9 +1,8 @@
 package readers.parsers;
 
-import Exceptions.ParserException;
+import exceptions.ParserException;
 import model.Contact;
 import model.Customer;
-import readers.Reader;
 import utils.ApplicationProperties;
 
 import java.io.File;
@@ -41,10 +40,10 @@ public class CustomerContactsCSVParser implements Parser {
     }
 
     @Override
-    public List<Customer> getCustomersFromFile(File file) throws ParserException {
+    public List<Customer> getCustomersFromFile(File file, String encoding) throws ParserException {
         this.customers.clear();
         try{
-            Scanner rowScanner = new Scanner(file);
+            Scanner rowScanner = new Scanner(file, encoding);
             while (rowScanner.hasNextLine()) {
                 customers.add(getCustomerData(rowScanner.nextLine()));
                 trySaveBatch(customers);

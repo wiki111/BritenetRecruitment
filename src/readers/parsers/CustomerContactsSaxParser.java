@@ -1,19 +1,18 @@
 package readers.parsers;
 
-import Exceptions.ParserException;
+import exceptions.ParserException;
 import model.Contact;
 import model.Customer;
 import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-import readers.Reader;
 import utils.ApplicationProperties;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,19 +42,27 @@ public class CustomerContactsSaxParser extends DefaultHandler implements Parser 
     }
 
     @Override
-    public List<Customer> getCustomersFromFile(File file) throws ParserException {
-        return parseFile(file);
+    public List<Customer> getCustomersFromFile(File file, String encoding) throws ParserException {
+        return parseFile(file, encoding);
     }
 
-    private List<Customer> parseFile(File file) throws ParserException{
+    private List<Customer> parseFile(File file, String encoding) throws ParserException{
         SAXParserFactory factory = SAXParserFactory.newInstance();
         try {
             SAXParser parser = factory.newSAXParser();
-            parser.parse(file, this);
+            parser.parse(getInputSourceForFileWithEncoding(file, encoding), this);
         } catch (ParserConfigurationException | SAXException | IOException e) {
             throw new ParserException(e.getMessage());
         }
         return customers;
+    }
+
+    private InputSource getInputSourceForFileWithEncoding(File file, String encoding) throws IOException{
+        InputStream inputStream = new FileInputStream(file);
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream, encoding);
+        InputSource inputSource = new InputSource(inputStreamReader);
+        inputSource.setEncoding(encoding);
+        return inputSource;
     }
 
     @Override
