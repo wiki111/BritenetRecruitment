@@ -17,6 +17,9 @@ import java.util.ArrayList;
 
 class Application{
 
+    private static final String GUI_MODE = "gui";
+    private static final String CRON_MODE = "cronmode"
+
     public static void main(String args[]){
         if(args.length > 0){
             try{
@@ -28,9 +31,9 @@ class Application{
         }else {
             try{
                 String application_mode = ApplicationProperties.getProperty("application.mode");
-                if(application_mode.equals("cronmode")){
+                if(application_mode.equals(CRON_MODE)){
                     executeApplication(ApplicationProperties.getProperty("application.defaultFilePath"));
-                }else if(application_mode.equals("gui")){
+                }else if(application_mode.equals(GUI_MODE)){
                     ApplicationGUI gui = new ApplicationGUI();
                     gui.run();
                 }
