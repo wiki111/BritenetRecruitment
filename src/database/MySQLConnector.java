@@ -68,7 +68,6 @@ public class MySQLConnector implements DBConnector {
             for(Contact contact : customer.getContactList()){
                 setUpContactStatement(contactStatement, contact, customerId);
                 objectProcessedListener.objectProcessed(contact.toString());
-                System.out.println(contact.toString());
                 contactStatement.addBatch();
             }
         }
@@ -82,7 +81,6 @@ public class MySQLConnector implements DBConnector {
         for(Customer customer : customers){
             setUpCustomerStatement(customerStatement, customer);
             objectProcessedListener.objectProcessed(customer.toString());
-            System.out.println(customer.toString());
             customerStatement.addBatch();
         }
 

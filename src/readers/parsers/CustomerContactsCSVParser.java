@@ -45,7 +45,11 @@ public class CustomerContactsCSVParser implements Parser {
         try{
             Scanner rowScanner = new Scanner(file, encoding);
             while (rowScanner.hasNextLine()) {
-                customers.add(getCustomerData(rowScanner.nextLine()));
+                String line = rowScanner.nextLine();
+                Customer customer = getCustomerData(line);
+                if(customer != null){
+                    customers.add(customer);
+                }
                 trySaveBatch(customers);
             }
             return customers;
@@ -63,13 +67,18 @@ public class CustomerContactsCSVParser implements Parser {
     }
 
     private Customer getCustomerData(String readLine){
-        ArrayList<String> values = new ArrayList<>();
-        Scanner lineScanner = new Scanner(readLine);
-        lineScanner.useDelimiter(COMMA_DELIMITER);
-        while (lineScanner.hasNext()){
-            values.add(lineScanner.next());
+        if(!(readLine.isEmpty() || readLine.isBlank())){
+            ArrayList<String> values = new ArrayList<>();
+            Scanner lineScanner = new Scanner(readLine);
+            lineScanner.useDelimiter(COMMA_DELIMITER);
+            while (lineScanner.hasNext()){
+                values.add(lineScanner.next());
+            }
+            return createCustomerFromData(values);
+        }else{
+            System.out.println("Empty line - couldn't create customer object.");
+            return null;
         }
-        return createCustomerFromData(values);
     }
 
     private Customer createCustomerFromData(ArrayList<String> data){
@@ -79,16 +88,18 @@ public class CustomerContactsCSVParser implements Parser {
         try{
             customer.setAge(Integer.valueOf(data.get(2)));
         }catch (NumberFormatException e){
-            System.out.println("Couldn't read age for customer " + customer.getName() + " " + customer.getSurname());
+            customer.setAge(0);
         }
         customer.setCity(data.get(3));
-        ListIterator<String> iterator = data.listIterator(4);
-        while (iterator.hasNext()){
-            String contactData = iterator.next();
-            Contact contact = new Contact();
-            contact.setContactData(contactData);
-            contact.setType(getContactType(contactData));
-            customer.getContactList().add(contact);
+        if(data.size() > 3){
+            ListIterator<String> iterator = data.listIterator(4);
+            while (iterator.hasNext()){
+                String contactData = iterator.next();
+                Contact contact = new Contact();
+                contact.setContactData(contactData);
+                contact.setType(getContactType(contactData));
+                customer.getContactList().add(contact);
+            }
         }
         return customer;
     }
