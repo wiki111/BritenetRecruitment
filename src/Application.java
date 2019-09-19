@@ -18,7 +18,7 @@ import java.util.ArrayList;
 class Application{
 
     private static final String GUI_MODE = "gui";
-    private static final String CRON_MODE = "cronmode"
+    private static final String CRON_MODE = "cron";
 
     public static void main(String args[]){
         if(args.length > 0){

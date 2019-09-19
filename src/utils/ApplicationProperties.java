@@ -1,11 +1,12 @@
 package utils;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 public class ApplicationProperties {
-    public static String getProperty(String property) throws Exception{
+    public static String getProperty(String property) throws IOException {
         InputStream inputStream;
         String propertiesFile = "config.properties";
 
